@@ -1,11 +1,48 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/background_office"
+        app:layout_heightPercent="110%"
+        app:layout_widthPercent="100%" />
 
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/iv_people"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true"
+        android:src="@mipmap/image_people"
+        app:layout_heightPercent="50%"
+        app:layout_widthPercent="29%"
+
+        />
+    <android.support.percent.PercentFrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_heightPercent="20%"
+        app:layout_widthPercent="60%"
+        android:layout_above="@id/iv_people"
+        android:layout_marginLeft="50dp"
+        >
+    <ImageView
+        android:id="@+id/iv_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/dialog"/>
+
+    <TextView
+        android:id="@+id/tv_context"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_gravity="center"
+        />
+    </android.support.percent.PercentFrameLayout>
+</android.support.percent.PercentRelativeLayout>
