@@ -28,11 +28,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private void iv_dialog_effect() {
-        AnimatorUtil.objectAnimatorTran(iv_dialog,"alpha",0f,1f,3000);
+        AnimatorUtil.objectAnimatorTranTogether(iv_dialog,"alpha",0f,1f,3000);
 
         tv_context.setText("你好，我是一名IT工程师。");
 
-        AnimatorUtil.objectAnimatorTran(tv_context,"alpha",0f,1f,3000);
+        AnimatorUtil.objectAnimatorTranTogether(tv_context,"alpha",0f,1f,3000);
 
 
     }
