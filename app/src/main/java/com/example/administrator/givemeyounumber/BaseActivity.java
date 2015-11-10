@@ -15,6 +15,9 @@ public class BaseActivity extends Activity {
         cancleTile();
     }
 
+    /**
+     * 取消头标题栏
+     */
     private void cancleTile() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
     }

@@ -38,11 +38,39 @@
         android:src="@mipmap/dialog"/>
 
     <TextView
-        android:id="@+id/tv_context"
+        android:id="@+id/tv_context1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="15dp"
         android:layout_gravity="center"
         />
+        <TextView
+            android:id="@+id/tv_context2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:id="@+id/tv_context3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:id="@+id/tv_context4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:id="@+id/tv_context5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:layout_gravity="center"
+            />
     </android.support.percent.PercentFrameLayout>
 </android.support.percent.PercentRelativeLayout>
