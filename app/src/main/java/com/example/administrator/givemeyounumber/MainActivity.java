@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.administrator.util.AnimatorUtil;
+
 public class MainActivity extends BaseActivity {
     private ImageView iv_background,iv_people,iv_dialog;
     private TextView tv_context;
@@ -24,7 +26,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void iv_dialog_effect() {
-        
-
+        tv_context.setText("你好，我是一名腼腆的IT工程师");
+        AnimatorUtil.objectAnimatorTranTogether(tv_context,"alpha",0f,1f,5000);
     }
 }
