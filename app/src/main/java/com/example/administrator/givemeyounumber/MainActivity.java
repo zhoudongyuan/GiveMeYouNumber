@@ -27,6 +27,6 @@ public class MainActivity extends BaseActivity {
 
     private void iv_dialog_effect() {
         tv_context.setText("你好，我是一名腼腆的IT工程师");
-        AnimatorUtil.objectAnimatorTranTogether(tv_context,"alpha",0f,1f,5000);
+        AnimatorUtil.objectAnimatorTranTogether(tv_context,"alpha",0f,1f,4000);
     }
 }
