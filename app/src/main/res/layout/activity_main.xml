@@ -21,7 +21,6 @@
         android:src="@mipmap/image_people"
         app:layout_heightPercent="50%"
         app:layout_widthPercent="35%"
-
         />
     <android.support.percent.PercentFrameLayout
         android:layout_width="0dp"
@@ -29,7 +28,7 @@
         app:layout_heightPercent="20%"
         app:layout_widthPercent="60%"
         android:layout_above="@id/iv_people"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="52dp"
         >
     <ImageView
         android:id="@+id/iv_dialog"
@@ -44,6 +43,5 @@
         android:textSize="15dp"
         android:layout_gravity="center"
         />
-
     </android.support.percent.PercentFrameLayout>
 </android.support.percent.PercentRelativeLayout>
