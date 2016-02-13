@@ -4,46 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/iv_background"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
-        android:src="@mipmap/background_office"
-        app:layout_heightPercent="100%"
-        app:layout_widthPercent="100%" />
+    <com.example.administrator.view.GamePintuLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerHorizontal="true">
 
-    <ImageView
-        android:id="@+id/iv_people"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_alignParentBottom="true"
-        android:src="@mipmap/image_people"
-        app:layout_heightPercent="50%"
-        app:layout_widthPercent="35%"
+    </com.example.administrator.view.GamePintuLayout>
 
-        />
-    <android.support.percent.PercentFrameLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_heightPercent="20%"
-        app:layout_widthPercent="60%"
-        android:layout_above="@id/iv_people"
-        android:layout_marginLeft="50dp"
-        >
-    <ImageView
-        android:id="@+id/iv_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@mipmap/dialog"/>
-
-    <TextView
-        android:id="@+id/tv_context"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="15dp"
-        android:layout_gravity="center"
-        />
-
-    </android.support.percent.PercentFrameLayout>
 </android.support.percent.PercentRelativeLayout>
