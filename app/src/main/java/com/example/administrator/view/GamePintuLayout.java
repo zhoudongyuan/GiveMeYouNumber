@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -204,28 +206,122 @@ class GamePintuLayout extends RelativeLayout implements View.OnClickListener {
     }
 
     /**
+     * 动画层
+     */
+    private RelativeLayout mAnimLayout;
+    
+
+    /**
      * 交换我们的item
      */
     private void exchangView() {
         mFirst.setColorFilter(null);
-        String fitstTag = (String) mFirst.getTag();
-        String secondTag = (String) mSecond.getTag();
+        //构造我们的动画层
+        setUpAnimLayout();
 
-        String[] firstParams = fitstTag.split("_");
-        String[] secondPatams = secondTag.split("_");
-
+        ImageView first = new ImageView(getContext());
         //通过mItemBitmaps的值找到储存的bitmap数据，然后两个之间进行交换
-        Bitmap firstBitmap = mItemBitmaps.get(Integer.parseInt(firstParams[0])).getBitmap();
+        final Bitmap firstBitmap = mItemBitmaps.get(getImageIdByTag((String) mFirst.getTag())).getBitmap();
+        first.setImageBitmap(firstBitmap);
+        LayoutParams lp = new LayoutParams(mItemWidth, mItemWidth);
+        lp.leftMargin = mFirst.getLeft() - mPadding;
+        lp.topMargin = mFirst.getTop() - mPadding;
+        first.setLayoutParams(lp);
+        mAnimLayout.addView(first);
 
 
-        Bitmap secondBitmap = mItemBitmaps.get(Integer.parseInt(secondPatams[0])).getBitmap();
-        mFirst.setImageBitmap(secondBitmap);
-        mSecond.setImageBitmap(firstBitmap);
+        ImageView second = new ImageView(getContext());
+        final Bitmap secondBitmap = mItemBitmaps.get(getImageIdByTag((String) mSecond.getTag())).getBitmap();
+        second.setImageBitmap(secondBitmap);
+        LayoutParams lp2 = new LayoutParams(mItemWidth, mItemWidth);
+        lp2.leftMargin = mSecond.getLeft() - mPadding;
+        lp2.topMargin = mSecond.getTop() - mPadding;
+        second.setLayoutParams(lp2);
+        mAnimLayout.addView(second);
 
-        //交换完成之后还要交换两个Tag
-        mFirst.setTag(secondTag);
-        mSecond.setTag(fitstTag);
 
-        mFirst = mSecond = null;
+        //设置动画
+        TranslateAnimation anim = new TranslateAnimation(0,
+                mSecond.getLeft() - mFirst.getLeft(), 0, mSecond.getTop() - mFirst.getTop());
+
+        anim.setDuration(300);
+        anim.setFillAfter(true);
+        first.startAnimation(anim);
+
+        TranslateAnimation animSecond = new TranslateAnimation(0,
+                -mSecond.getLeft() + mFirst.getLeft(), 0, -mSecond.getTop() + mFirst.getTop());
+
+        animSecond.setDuration(300);
+        animSecond.setFillAfter(true);
+        second.startAnimation(animSecond);
+
+        //监听动画
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                //先把之前的图片进行隐藏
+                mFirst.setVisibility(View.INVISIBLE);
+                mSecond.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                String fitstTag = (String) mFirst.getTag();
+                String secondTag = (String) mSecond.getTag();
+
+                mFirst.setImageBitmap(secondBitmap);
+                mSecond.setImageBitmap(firstBitmap);
+
+                //交换完成之后还要交换两个Tag
+                mFirst.setTag(secondTag);
+                mSecond.setTag(fitstTag);
+
+                mFirst.setVisibility(View.VISIBLE);
+                mSecond.setVisibility(View.VISIBLE);
+
+                mFirst = mSecond = null;
+                //移除动画层
+                mAnimLayout.removeAllViews();
+
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+
+
+    }
+//以下为两个简便方法
+
+    /**
+     * 根据tag获取Id
+     *
+     * @param tag
+     * @return
+     */
+    public int getImageIdByTag(String tag) {
+        String[] split = tag.split("_");
+        return Integer.parseInt(split[0]);
+    }
+
+    public int getImageIndex(String tag) {
+        String[] split = tag.split("_");
+        return Integer.parseInt(split[1]);
+    }
+
+
+    /**
+     * 构造我们的动画层
+     */
+    private void setUpAnimLayout() {
+        if (mAnimLayout == null) {
+            mAnimLayout = new RelativeLayout(getContext());
+            addView(mAnimLayout);
+
+        }
     }
 }
