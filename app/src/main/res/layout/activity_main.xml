@@ -5,9 +5,8 @@
     android:layout_height="wrap_content">
 
 
-
-   <com.example.administrator.view.GamePintuLayout
-       android:layout_width="fill_parent"
-       android:layout_height="fill_parent"
-       android:layout_centerVertical="true"></com.example.administrator.view.GamePintuLayout>
+    <com.example.administrator.view.GamePintuLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerHorizontal="true"></com.example.administrator.view.GamePintuLayout>
 </android.support.percent.PercentRelativeLayout>

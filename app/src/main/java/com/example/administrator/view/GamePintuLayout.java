@@ -3,6 +3,7 @@ package com.example.administrator.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -181,8 +182,50 @@ class GamePintuLayout extends RelativeLayout implements View.OnClickListener {
         return min;
     }
 
+    private ImageView mFirst;
+    private ImageView mSecond;
+
     @Override
     public void onClick(View v) {
+        //两次点击同一个item，取消所有操作
+        if (mFirst == v) {
+            mFirst.setColorFilter(null);
+            mFirst = null;
+            return;
+        }
+        if (mFirst == null) {
+            //点击之后设置界面的透明度
+            mFirst = (ImageView) v;
+            mFirst.setColorFilter(Color.parseColor("#55FF0000"));
+        } else {
+            mSecond = (ImageView) v;
+            exchangView();
+        }
+    }
 
+    /**
+     * 交换我们的item
+     */
+    private void exchangView() {
+        mFirst.setColorFilter(null);
+        String fitstTag = (String) mFirst.getTag();
+        String secondTag = (String) mSecond.getTag();
+
+        String[] firstParams = fitstTag.split("_");
+        String[] secondPatams = secondTag.split("_");
+
+        //通过mItemBitmaps的值找到储存的bitmap数据，然后两个之间进行交换
+        Bitmap firstBitmap = mItemBitmaps.get(Integer.parseInt(firstParams[0])).getBitmap();
+
+
+        Bitmap secondBitmap = mItemBitmaps.get(Integer.parseInt(secondPatams[0])).getBitmap();
+        mFirst.setImageBitmap(secondBitmap);
+        mSecond.setImageBitmap(firstBitmap);
+
+        //交换完成之后还要交换两个Tag
+        mFirst.setTag(secondTag);
+        mSecond.setTag(fitstTag);
+
+        mFirst = mSecond = null;
     }
 }
