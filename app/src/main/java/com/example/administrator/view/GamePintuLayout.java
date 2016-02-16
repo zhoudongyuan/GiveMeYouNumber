@@ -4,13 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.administrator.givemeyounumber.R;
 import com.example.administrator.util.ImagePiece;
@@ -20,11 +23,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import java.util.logging.LogRecord;
+
 /**
  * 自定义容器
  * Created by Administrator on 2016/2/10.
  */
-class GamePintuLayout extends RelativeLayout implements View.OnClickListener {
+public class GamePintuLayout extends RelativeLayout implements View.OnClickListener {
 
     private int mColumn = 3;
 
@@ -64,6 +69,98 @@ class GamePintuLayout extends RelativeLayout implements View.OnClickListener {
      * 游戏面板宽度
      */
     private int mWidth;
+    public boolean isGameSuccess;
+    private boolean isGameOver;
+
+
+
+    /**
+     * 给mainActivity设置一些接口使用
+     */
+    public interface GamePintuListener
+    {
+        void nextLevel(int nextLevel);
+
+        void timechanged(int currentTime);
+
+        void gameover();
+    }
+
+    //当前的关卡数
+    private int level = 1;
+    //主界面传进来的状态
+    private  static  final  int TIME_CHANGED = 1;
+    private  static  final int NEXT_LEVEL = 2;
+
+
+
+    //进行接口的初始化关联这个界面的作用
+    public  GamePintuListener mListener;
+
+    /**
+     * 设置接口回调
+     * @param mListener
+     */
+    public void setOnGamePintuListener(GamePintuListener mListener)
+    {
+        this.mListener = mListener;
+    }
+
+
+
+
+    private Handler mHandler = new Handler() {
+
+        public void  handleMessage(android.os.Message msg)
+        {
+             switch (msg.what)
+             {
+                 case TIME_CHANGED:
+                     if (isGameSuccess||isGameOver||isPause)
+                         return;
+
+                     if (mListener!=null)
+                     {
+                         mListener.timechanged(mTime);
+                         if (mTime ==0)
+                         {
+                             isGameOver =true;
+                             mListener.gameover();
+                             return;
+                         }
+                     }
+                     mTime--;
+
+                     mHandler.sendEmptyMessageDelayed(TIME_CHANGED,1000);
+
+                     break;
+                 case NEXT_LEVEL:
+                     level = level =1;
+                     if (mListener!=null)
+                     {
+                         mListener.nextLevel(level);
+                     }
+                     else {
+                         nextLevel();
+                     }
+                     break;
+             }
+        };
+
+    };
+
+    //给用户提供设置时间的接口
+    private  boolean isTimeEnabled = false;
+    private int mTime;
+
+    /**
+     * 设置是否开启时间
+     * @param isTimeEnabled
+     */
+    public void setTimeEnabled(boolean isTimeEnabled) {
+        this.isTimeEnabled = isTimeEnabled;
+    }
+
 
     public GamePintuLayout(Context context) {
         this(context, null);
@@ -96,11 +193,32 @@ class GamePintuLayout extends RelativeLayout implements View.OnClickListener {
             initBitmap();
             //设置ImageView（Item）的宽高等属性
             initTItem();
+            //判断是否开启时间
+            checkTimeEnable();
+
             once = true;
 
         }
         //重置界面的宽高
         setMeasuredDimension(mWidth, mWidth);
+    }
+
+    /**
+     * 判断是否要开启时间
+     */
+    private void checkTimeEnable() {
+        //如果输入是需要开启执行操作
+        if (isTimeEnabled)
+        {
+            //根据当前登记设置事件
+            countTimeBaseLevel();
+            //通知界面时间改变了
+            mHandler.sendEmptyMessage(TIME_CHANGED);
+        }
+    }
+
+    private void countTimeBaseLevel() {
+        mTime = (int)Math.pow(2,level)*60;
     }
 
     /**
@@ -168,6 +286,55 @@ class GamePintuLayout extends RelativeLayout implements View.OnClickListener {
 
     }
 
+    private boolean isPause;
+
+    /**
+     * 暂停状态
+     */
+    public void pause()
+    {
+        isPause =true;
+        mHandler.removeMessages(TIME_CHANGED);
+    }
+
+    /**
+     * 重新开始
+     */
+    public void reStart()
+    {
+        if (isPause) {
+            isPause = false;
+            mHandler.sendEmptyMessage(TIME_CHANGED);
+        }
+    }
+
+
+    /**
+     * 重新开始这一关卡
+     */
+    public  void restart()
+    {
+        isGameOver =false;
+        mColumn --;
+        nextLevel();
+    }
+
+
+    /**
+     * 进入下一关的操作
+     */
+    public void nextLevel()
+    {
+        this.removeAllViews();
+        mAnimLayout = null;
+        level++;
+        mColumn ++;
+        isGameSuccess = false;
+        checkTimeEnable();
+        initBitmap();
+        initTItem();
+    }
+
 
     /**
      * 获取多个参数的最小值
@@ -189,6 +356,9 @@ class GamePintuLayout extends RelativeLayout implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        //表示如果当前正在进行动画的话就执行返回return
+        if (isAniming)
+            return;
         //两次点击同一个item，取消所有操作
         if (mFirst == v) {
             mFirst.setColorFilter(null);
@@ -209,7 +379,7 @@ class GamePintuLayout extends RelativeLayout implements View.OnClickListener {
      * 动画层
      */
     private RelativeLayout mAnimLayout;
-    
+    private boolean isAniming;
 
     /**
      * 交换我们的item
@@ -262,6 +432,7 @@ class GamePintuLayout extends RelativeLayout implements View.OnClickListener {
                 //先把之前的图片进行隐藏
                 mFirst.setVisibility(View.INVISIBLE);
                 mSecond.setVisibility(View.INVISIBLE);
+                isAniming = true;
             }
 
             @Override
@@ -283,7 +454,36 @@ class GamePintuLayout extends RelativeLayout implements View.OnClickListener {
                 //移除动画层
                 mAnimLayout.removeAllViews();
 
+                //判断用户游戏是否成功
+                checkSuccess();
+                isAniming = false;
 
+            }
+
+            /**
+             * 每一次动画结束都判断一次是否游戏结束
+             */
+            private void checkSuccess() {
+
+                boolean isSuccess = true;
+                for (int i =0;i<mGamePintuItems.length;i++)
+                {
+                    ImageView imageView = mGamePintuItems[i];
+
+                    if (getImageIndex((String)imageView.getTag())!=i)
+                    {
+                        isSuccess = false;
+                    }
+
+                }
+                if (isSuccess)
+                {
+                    isGameSuccess =true;
+                    mHandler.removeMessages(TIME_CHANGED);
+                    Log.e("TAG", "Success");
+                    Toast.makeText(getContext(),"success!",Toast.LENGTH_LONG).show();
+                    mHandler.sendEmptyMessage(NEXT_LEVEL);
+                }
             }
 
             @Override
